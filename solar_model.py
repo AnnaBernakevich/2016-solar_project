@@ -1,3 +1,4 @@
+import math
 # coding: utf-8
 # license: GPLv3
 
@@ -19,8 +20,9 @@ def calculate_force(body, space_objects):
         if body == obj:
             continue  # тело не действует гравитационной силой на само себя!
         r = ((body.x - obj.x)**2 + (body.y - obj.y)**2)**0.5
-        body.Fx += 1  # FIXME: нужно вывести формулу...
-        body.Fy += 2  # FIXME: нужно вывести формулу...
+        an = math.atan2((obj.y - body.y), (obj.x - body.x))
+        body.Fx += gravitational_constant*body.m*obj.m*math.cos(an)/r**2
+        body.Fy += gravitational_constant*body.m*obj.m*math.sin(an)/r**2
 
 
 def move_space_object(body, dt):
@@ -31,11 +33,11 @@ def move_space_object(body, dt):
     **body** — тело, которое нужно переместить.
     """
 
-    ax = body.Fx/body.m
-    body.x += 42  # FIXME: не понимаю как менять...
-    body.Vx += ax*dt
-    # FIXME: not done recalculation of y coordinate!
-
+    ax, ay = body.Fx/body.m, body.Fy/body.m
+    body.Vx += ax * dt
+    body.x += body.Vx * dt
+    body.Vy += ay * dt
+    body.y += body.Vy * dt
 
 def recalculate_space_objects_positions(space_objects, dt):
     """Пересчитывает координаты объектов.
