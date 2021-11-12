@@ -7,6 +7,7 @@ from solar_vis import *
 from solar_model import *
 from solar_input import *
 
+
 perform_execution = False
 """Флаг цикличности выполнения расчёта"""
 
@@ -37,7 +38,8 @@ def execution():
     recalculate_space_objects_positions(space_objects, time_step.get())
     for body in space_objects:
         update_object_position(space, body)
-    save_statisctic_to_file("stats.txt", space_objects[4], space_objects[0], physical_time)
+    planet_for_statistics, star_for_statistics = get_objects_for_statistics(space_objects)
+    save_statisctic_to_file("stats.txt", planet_for_statistics, star_for_statistics, physical_time)
     physical_time += time_step.get()
     displayed_time.set("%.1f" % physical_time + " seconds gone")
 
@@ -101,6 +103,10 @@ def save_file_dialog():
     out_filename = asksaveasfilename(filetypes=(("Text file", ".txt"),))
     write_space_objects_data_to_file(out_filename, space_objects)
 
+def display_statistics():
+    time, velocity, distance = read_statistics_from_file("stats.txt")
+    visualize_statistics(time, velocity, distance)
+
 
 def main():
     """Главная функция главного модуля.
@@ -117,6 +123,7 @@ def main():
     physical_time = 0
 
     root = tkinter.Tk()
+    root.title("Приложение Солнечная система")
     # космическое пространство отображается на холсте типа Canvas
     space = tkinter.Canvas(root, width=window_width, height=window_height, bg="black")
     space.pack(side=tkinter.TOP)
@@ -146,9 +153,10 @@ def main():
     time_label = tkinter.Label(frame, textvariable=displayed_time, width=30)
     time_label.pack(side=tkinter.RIGHT)
 
+    display_statistics_button = tkinter.Button(frame, text="Display the statistics", command=display_statistics)
+    display_statistics_button.pack(side=tkinter.LEFT)
+
     root.mainloop()
-    time, velocity, distance = read_statistics_from_file("stats.txt")
-    visualize_statistics(time, velocity, distance)
     open('stats.txt', 'w').close()
     print('Modelling finished!')
 
