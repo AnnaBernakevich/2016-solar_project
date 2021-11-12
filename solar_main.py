@@ -37,6 +37,7 @@ def execution():
     recalculate_space_objects_positions(space_objects, time_step.get())
     for body in space_objects:
         update_object_position(space, body)
+    save_statisctic_to_file("stats.txt", space_objects[4], space_objects[0], physical_time)
     physical_time += time_step.get()
     displayed_time.set("%.1f" % physical_time + " seconds gone")
 
@@ -146,6 +147,9 @@ def main():
     time_label.pack(side=tkinter.RIGHT)
 
     root.mainloop()
+    time, velocity, distance = read_statistics_from_file("stats.txt")
+    visualize_statistics(time, velocity, distance)
+    open('stats.txt', 'w').close()
     print('Modelling finished!')
 
 if __name__ == "__main__":
