@@ -3,6 +3,8 @@
 
 from solar_objects import Star, Planet
 import matplotlib.pyplot as plt
+from matplotlib.figure import Figure
+from matplotlib.backends.backend_tkagg import (FigureCanvasTkAgg, NavigationToolbar2Tk)
 
 
 def read_space_objects_data_from_file(input_filename):
@@ -90,6 +92,27 @@ def write_space_objects_data_to_file(output_filename, space_objects):
             print(s)
             out_file.write(s)
     return
+
+def get_objects_for_statistics(space_objects):
+    """
+    Функция выбирает первый объект типа Planet и первый объект типа Star из space_objects
+    По умолчанию они существуют.
+
+    **planet_for_statistics** - объект типа Planet для статистики
+    **star_for_statistics** - объект типа Star для статистики
+    """
+    planet_for_statistics = None
+    star_for_statistics = None
+    for obj in space_objects:
+        if str(type(obj).__name__) == 'Planet':
+            planet_for_statistics = obj
+            break
+    for obj in space_objects:
+        if str(type(obj).__name__) == 'Star':
+            star_for_statistics = obj
+            break
+
+    return planet_for_statistics, star_for_statistics
 
 def save_statisctic_to_file(filename, obj, star, physical_time):
     """Сохраняет данные о космическом объекте в файл.
